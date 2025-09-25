@@ -2,17 +2,20 @@ import com.jogamp.newt.opengl.GLWindow;
 
 FPCamera mainCamera;
 GLWindow r;
+PGraphics darkLayer;
 ArrayList<PVector> trees = new ArrayList<PVector>();
 
 void setup() {
   fullScreen(P3D);
+  darkLayer = createGraphics(width, height, P2D);
+  darkLayer.smooth();
   mainCamera = new FPCamera();
   r = (GLWindow)surface.getNative();
   placeTrees();
 }
 
 void draw() {
-  background(245, 242, 151);
+  background(0);
   lights();
   mainCamera.canTransformations();
 
@@ -22,18 +25,16 @@ void draw() {
 
   renderEnvironment();
   renderTrees();
-  //flashlight();
+  drawFlashlightHole();
 }
 
 void renderEnvironment() {
   int grassSize = 50;
 
-  fill(105, 88, 114);
-
   // Draw the elevated layer of boxes
   for (int z = 0; z < grassSize; z++) {
     for (int x = 0; x < grassSize; x++) {
-      block(x * 50, height / 3 + 20, z * 50, 50);
+      grass(x * 50, height / 3 + 20, z * 50, 50);
     }
   }
 
@@ -54,22 +55,20 @@ void renderTrees() {
   }
 }
 
-/*void flashlight(){
- noStroke();
- fill(0, 180);
- rect(0, 0, width, height);
- 
- drawRadialLight(width / 2, height / 2, 300);
- blendMode(BLEND);
-}
+void drawFlashlightHole() {
+  darkLayer.beginDraw();
+  darkLayer.clear(); //make PGraphics transparent
 
-void drawRadialLight(float x, float y, float radius){
-  for(float r = radius; r > 0; r-=2){
-   float alpha = map(r, 0, radius, 0, 255);
-   fill(0, alpha);
-   ellipse(x, y, r*2, r*2);
-  }
-}*/
+  //fill whole screen with darkness
+  darkLayer.noStroke();
+  darkLayer.fill(0, 260);
+  darkLayer.rect(0, 0, width, height);
+
+  darkLayer.endDraw();
+
+  camera();
+  image(darkLayer, 0, 0);
+}
 
 void keyPressed() {
   mainCamera.handleKeyPressed();

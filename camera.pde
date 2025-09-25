@@ -10,6 +10,8 @@ class FPCamera {
   float worldMaxX = grassSize * 50;
   float worldMinZ = 0;
   float worldMaxZ = grassSize * 50;
+  PGraphics darkLayer;
+  int flashlightRadius = 300;
 
   FPCamera() {
     // Start camera near the center of the screen, slightly above ground
