@@ -22,6 +22,7 @@ void draw() {
 
   renderEnvironment();
   renderTrees();
+  //flashlight();
 }
 
 void renderEnvironment() {
@@ -52,6 +53,23 @@ void renderTrees() {
     tree(t.x, t.y, t.z);
   }
 }
+
+/*void flashlight(){
+ noStroke();
+ fill(0, 180);
+ rect(0, 0, width, height);
+ 
+ drawRadialLight(width / 2, height / 2, 300);
+ blendMode(BLEND);
+}
+
+void drawRadialLight(float x, float y, float radius){
+  for(float r = radius; r > 0; r-=2){
+   float alpha = map(r, 0, radius, 0, 255);
+   fill(0, alpha);
+   ellipse(x, y, r*2, r*2);
+  }
+}*/
 
 void keyPressed() {
   mainCamera.handleKeyPressed();
