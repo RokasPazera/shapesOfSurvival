@@ -4,6 +4,9 @@ FPCamera mainCamera;
 GLWindow r;
 PGraphics darkLayer;
 ArrayList<PVector> trees = new ArrayList<PVector>();
+PShape gorvekModel;
+
+ArrayList<Gorvek> gorveks = new ArrayList<Gorvek>();
 
 void setup() {
   fullScreen(P3D);
@@ -12,39 +15,30 @@ void setup() {
   mainCamera = new FPCamera();
   r = (GLWindow)surface.getNative();
   placeTrees();
+  addGorveks();
+  
+  gorvekModel = loadShape("gorvek/gorvek.obj");
 }
 
 void draw() {
-  background(0);
+  background(255);
   lights();
   mainCamera.canTransformations();
 
   r.confinePointer(true); //restrict pointer to the window
   r.setPointerVisible(false);
   r.warpPointer(width / 2, height / 2); //recenters cursor position
-
-  renderEnvironment();
   renderTrees();
-  drawFlashlightHole();
-}
-
-void renderEnvironment() {
-  int grassSize = 50;
-
-  // Draw the elevated layer of boxes
-  for (int z = 0; z < grassSize; z++) {
-    for (int x = 0; x < grassSize; x++) {
-      grass(x * 50, height / 3 + 20, z * 50, 50);
-    }
-  }
-
-  tree(500, height / 3, 500);
+  fence();
+  //drawFlashlightHole();
+  
+  updateGorveks();
 }
 
 void placeTrees() {
   for (int i = 0; i < 20; i++) {
-    float tx = int(random(0, 50)) * 50;
-    float tz = int(random(0, 50)) * 50;
+    float tx = int(random(0, worldSize)) * 50;
+    float tz = int(random(0, worldSize)) * 50;
     trees.add(new PVector(tx, height / 3, tz));
   }
 }
@@ -68,6 +62,21 @@ void drawFlashlightHole() {
 
   camera();
   image(darkLayer, 0, 0);
+}
+
+void addGorveks() {
+  for(int i = 0; i < 2; i++){
+    float x = random(worldArea);
+    float z = random(worldArea);
+    gorveks.add(new Gorvek(x, height / 3, z));
+  }
+}
+
+void updateGorveks() {
+  for(Gorvek g: gorveks){
+    g.update();
+    g.display();
+  }
 }
 
 void keyPressed() {

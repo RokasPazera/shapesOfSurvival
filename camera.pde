@@ -5,11 +5,11 @@ class FPCamera {
   float sensitivity = 0.002;
   float speed = 7;
   boolean forward = false, right = false, left = false, back = false, shift = false;
-  int grassSize = 50;
+  int worldSize = 50;
   float worldMinX = 0;
-  float worldMaxX = grassSize * 50;
+  float worldMaxX = worldSize * worldSize;
   float worldMinZ = 0;
-  float worldMaxZ = grassSize * 50;
+  float worldMaxZ = worldSize * worldSize;
   PGraphics darkLayer;
   int flashlightRadius = 300;
 
