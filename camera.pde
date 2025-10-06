@@ -5,11 +5,10 @@ class FPCamera {
   float sensitivity = 0.002;
   float speed = 7;
   boolean forward = false, right = false, left = false, back = false, shift = false;
-  int worldSize = 50;
   float worldMinX = 0;
-  float worldMaxX = worldSize * worldSize;
+  float worldMaxX = worldArea;
   float worldMinZ = 0;
-  float worldMaxZ = worldSize * worldSize;
+  float worldMaxZ = worldArea;
   PGraphics darkLayer;
   int flashlightRadius = 300;
 
