@@ -1,5 +1,3 @@
-float worldSize = 50;
-float worldArea = worldSize * worldSize;
 
 void tree(float x, float y, float z) {
   pushMatrix();
@@ -94,4 +92,93 @@ void pyramid(float x, float y, float z, float baseSize, float height){
   
   endShape();
   popMatrix();
+}
+
+void cylinder(float r, float h){
+  int sides = 24;
+  float angle = TWO_PI / sides;
+  beginShape(QUAD_STRIP);
+  for(int i = 0; i <= sides; i++){
+    float x = cos(angle * i) * r;
+    float z = sin(angle * i) * r;
+    vertex(x, -h/2, z);
+  }
+  
+  endShape();
+  
+  beginShape(TRIANGLE_FAN);
+  vertex(0, -h/2, 0);
+  for(int i = 0; i <= sides; i++){
+    float x = cos(angle * i) * r;
+    float z = sin(angle * i) * r;
+    vertex(x, -h/2, z);
+  }
+  
+  endShape();
+  
+    beginShape(TRIANGLE_FAN);
+  vertex(0, h/2, 0);
+  for(int i = 0; i <= sides; i++){
+    float x = cos(angle * i) * r;
+    float z = sin(angle * i) * r;
+    vertex(x, h/2, z);
+  }
+  
+  endShape();
+}
+
+void cone(float r, float h){
+  int sides = 24;
+  float angle = TWO_PI / sides;
+  
+    beginShape(TRIANGLE_FAN);
+  vertex(0, -h/2, 0);
+  for(int i = 0; i <= sides; i++){
+    float x = cos(angle * i) * r;
+    float z = sin(angle * i) * r;
+    vertex(x, -h/2, z);
+  }
+  endShape();
+  
+    beginShape(TRIANGLE_FAN);
+  vertex(0, h/2, 0);
+  for(int i = 0; i <= sides; i++){
+    float x = cos(angle * i) * r;
+    float z = sin(angle * i) * r;
+    vertex(x, -h/2, z);
+  }
+  
+  endShape();
+  
+}
+
+void octahedron(float s){
+  float h = s;
+  PVector top = new PVector(0, h, 0);
+  PVector bottom = new PVector(0, -h, 0);
+  PVector[] base = {
+  new PVector(-s, 0, 0),
+  new PVector(0, 0, s),
+  new PVector(s, 0, 0),
+  new PVector(0, 0, -s)
+};
+beginShape(TRIANGLES);
+for(int i = 0; i < 4; i++){
+  PVector a = base[i];
+  PVector b = base[(i+1)%4];
+  vertex(top.x, top.y, top.z);
+  vertex(a.x, a.y, a.z);
+  vertex(b.x, b.y, b.z);
+}
+
+for(int i = 0; i < 4; i++){
+  PVector a = base[i];
+  PVector b = base[(i+1)%4];
+  vertex(bottom.x, bottom.y, bottom.z);
+  vertex(b.x, b.y, b.z);
+  vertex(a.x, a.y, a.z);
+  endShape();
+}
+
+
 }

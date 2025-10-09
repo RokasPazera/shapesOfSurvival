@@ -5,6 +5,7 @@ class Gorvek {
   float wanderRadius = 500;
   float scale = 60;
   float groundY;
+  float revealRadius = 800;
 
   Gorvek(float x, float y, float z) {
     pos = new PVector(x, y, z);
@@ -49,16 +50,27 @@ class Gorvek {
   }
 
   void display() {
+    
+    float d = dist(mainCamera.cameraPosition.x, mainCamera.cameraPosition.z, pos.x, pos.z);
+    
+    if(d > revealRadius) return;
+    
+    float alpha = map(d, 0, revealRadius, 255, 0);
+    alpha = constrain(alpha, 0, 255);
+    if(alpha < 5) return;
+    
     pushMatrix();
     translate(pos.x, groundY + 300, pos.z);
     float angle = atan2(target.x - pos.x, target.z - pos.z);
     rotateY(angle);  
     rotateZ(PI);
     
-    fill(255);
+    pushStyle();
+    noStroke();
+    fill(0, 0, 0, alpha);
     scale(scale);
     shape(gorvekModel);
-    
+    popStyle();
     popMatrix();
   }
   

@@ -10,6 +10,14 @@ PFont credits;
 Minim minim;
 AudioPlayer menuMusic;
 
+float worldSize = 120;
+float worldArea = worldSize * worldSize;
+
+ArrayList<Collectibles> collectibles = new ArrayList<Collectibles>();
+int collectedCount = 0;
+boolean gameWon = false;
+float winStartTime = 0;
+
 boolean inMenu=true;
 boolean inVolumeMenu = false;
 String selectedOption="";
@@ -46,6 +54,7 @@ void setup() {
   r = (GLWindow)surface.getNative();
   placeTrees();
   addGorveks();
+  placeCollectibles();
 
   gorvekModel = loadShape("gorvek/gorvek.obj");
 }
@@ -127,7 +136,7 @@ void drawVolumeMenu() {
 
 // ------------------     GAME     ----------------------------
 void drawGame() {
-  background(255);
+  background(0);
   lights();
   mainCamera.canTransformations();
 
@@ -136,8 +145,12 @@ void drawGame() {
   r.warpPointer(width / 2, height / 2); //recenters cursor position
   renderTrees();
   fence();
-  //drawFlashlightHole();
 
+  renderCollectibles();
+  countCollected();
+  showScore();
+  if (gameWon) handleGameWon();
+  
   updateGorveks();
 }
 
@@ -189,9 +202,9 @@ void keyReleased() {
 
 // ------------------     GAME OBJECTS     ----------------------------
 void placeTrees() {
-  for (int i = 0; i < 20; i++) {
-    float tx = int(random(0, worldSize)) * 50;
-    float tz = int(random(0, worldSize)) * 50;
+  for (int i = 0; i < worldSize; i++) {
+    float tx = int(random(0, worldSize)) * worldSize;
+    float tz = int(random(0, worldSize)) * worldSize;
     trees.add(new PVector(tx, height / 3, tz));
   }
 }
@@ -202,19 +215,60 @@ void renderTrees() {
   }
 }
 
-void drawFlashlightHole() {
-  darkLayer.beginDraw();
-  darkLayer.clear(); //make PGraphics transparent
 
-  //fill whole screen with darkness
-  darkLayer.noStroke();
-  darkLayer.fill(0, 260);
-  darkLayer.rect(0, 0, width, height);
+void placeCollectibles() {
+  collectibles.clear();
+  float y = height / 3 + 50;
 
-  darkLayer.endDraw();
+  collectibles.add(new Collectibles(200, y, 200, "cube"));
+  collectibles.add(new Collectibles(800, y, 1500, "sphere"));
+  collectibles.add(new Collectibles(2500, y, 3000, "cylinder"));
+  collectibles.add(new Collectibles(4500, y, 4500, "cone"));
+  collectibles.add(new Collectibles(1000, y, 3800, "octahedron"));
+}
 
+void renderCollectibles() {
+  for (Collectibles c : collectibles) {
+    c.display();
+    c.checkCollected();
+  }
+}
+
+void countCollected() {
+  collectedCount = 0;
+  for (Collectibles c : collectibles) {
+    if (c.collected) collectedCount++;
+  }
+  if (collectedCount == collectibles.size() && !gameWon) {
+    gameWon = true;
+    winStartTime = millis();
+  }
+}
+
+void handleGameWon() {
   camera();
-  image(darkLayer, 0, 0);
+  textAlign(CENTER, CENTER);
+  textFont(horrorFont);
+  textSize(80);
+  fill(255, 0, 0);
+  text("YOU WIN!", width / 2, height / 2);
+  if (millis() - winStartTime > 5000) {
+    inMenu = true;
+    gameWon = false;
+    for (Collectibles c : collectibles) c.collected = false;
+    menuMusic.rewind();
+    menuMusic.play();
+  }
+}
+
+void showScore(){
+  camera();
+  String score = "Collected" + collectedCount;
+  textAlign(RIGHT, TOP);
+  textFont(horrorFont);
+  textSize(50);
+  fill(255, 0, 0);
+  text(score, width - 50, 50);
 }
 
 void addGorveks() {
